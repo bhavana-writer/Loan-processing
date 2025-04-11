@@ -1,0 +1,25 @@
+# Environment variables
+.env
+.env.*
+*.env
+config/.env.*
+config/*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+*.so
+
+# Poetry
+dist/
+*.egg-info/
+.eggs/
+*.egg
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo

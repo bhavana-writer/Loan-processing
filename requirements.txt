@@ -1,0 +1,9 @@
+requests
+writer==0.8.3rc6
+instructor
+yfinance
+html2text
+python-dotenv==1.0.1
+pydantic>=2.0.0,<3.0.0
+
+

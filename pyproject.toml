@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "Loan Processing"
+version = "0.1.0"
+description = "Writer Framework App"
+authors = ["Writer"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+writer = "0.8.3rc6"
+python-dotenv = "1.0.1"
+requests = "^2.32.3"
+instructor = "^1.7.2"
+yfinance = "^0.2.54"
+html2text = "^2024.2.26"
+pydantic = ">=2.0.0,<3.0.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
