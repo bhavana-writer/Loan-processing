@@ -2,7 +2,6 @@ import sys
 import os
 import logging
 from pathlib import Path
-import importlib
 
 # Set up logging
 logging.basicConfig(
@@ -16,36 +15,46 @@ logger = logging.getLogger(__name__)
 PROJECT_ROOT = Path(__file__).resolve().parent
 sys.path.append(str(PROJECT_ROOT))
 
+# Define a global app variable
+app = None
+
 try:
     # Import Writer Framework modules
     import writer as wf
-    from writer.serve import app as writer_app
+    import writer.serve
     
-    # Log successful import
     logger.info("Writer Framework imported successfully")
     
-    # Initialize Writer Framework app
-    logger.info("Initializing Writer Framework app")
-    
-    # Import main app to ensure state is initialized
+    # First, try to initialize Writer app directly
     try:
+        # Initialize main app to load state
         import main
         logger.info("Main app imported successfully")
+        
+        # Try to get the app from writer.serve
+        if hasattr(writer.serve, 'app') and writer.serve.app is not None:
+            app = writer.serve.app
+            logger.info("Using writer.serve.app")
+        else:
+            # Initialize directly using writer.serve.init_app()
+            logger.info("writer.serve.app is None, initializing manually")
+            if hasattr(writer.serve, 'init_app'):
+                app = writer.serve.init_app()
+                logger.info("App initialized using writer.serve.init_app()")
+            else:
+                logger.error("Could not initialize app - writer.serve.init_app not found")
+                app = None
     except Exception as e:
-        logger.error(f"Error importing main app: {e}")
-    
-    # Set the app variable to the Writer Framework app
-    app = writer_app
-    logger.info("Writer Framework app assigned to 'app'")
-    
-    # Add additional routes if needed
-    @app.get("/api/health")
-    async def health_check():
-        return {"status": "ok", "framework": "writer"}
-
+        logger.error(f"Error initializing Writer app: {e}")
+        app = None
+        
 except ImportError as e:
-    # Fall back to a basic FastAPI app if Writer Framework can't be imported
     logger.error(f"Error importing Writer Framework: {e}")
+    app = None
+
+# If we couldn't get the Writer app, create a fallback FastAPI app
+if app is None:
+    logger.warning("Using fallback FastAPI app")
     from fastapi import FastAPI
     from fastapi.responses import HTMLResponse
     
@@ -72,10 +81,11 @@ except ImportError as e:
             </body>
         </html>
         """)
-    
-    @app.get("/api/health")
-    async def health_check():
-        return {"status": "ok", "framework": "fallback"}
+
+# Add health check endpoint regardless of which app we're using
+@app.get("/api/health")
+async def health_check():
+    return {"status": "ok", "framework": "writer" if 'writer' in sys.modules else "fallback"}
 
 # Direct execution handler
 if __name__ == "__main__":

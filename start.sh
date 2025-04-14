@@ -22,5 +22,8 @@ echo "Python path: $PYTHONPATH"
 echo "Available files:"
 ls -la
 
-# Start the application with Writer Framework integration
-exec uvicorn writer_server:app --host 0.0.0.0 --port $PORT --log-level info 
+# Make the Python starter script executable
+chmod +x start-python.py
+
+# Start the application using our Python starter script
+exec python start-python.py 
