@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: loan-processing
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: ./start.sh
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.0
+      - key: PORT
+        value: 8000
+      - key: WEB_CONCURRENCY
+        value: 1
+      - key: MAX_WORKERS
+        value: 1
+    plan: free 
