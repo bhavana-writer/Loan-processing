@@ -12,4 +12,10 @@ services:
           type: web
           name: loan-processing
           envVarKey: RENDER_EXTERNAL_PORT
+      - key: WRITER_FRAMEWORK_ENV
+        value: production
+      - key: APP_NAME
+        value: Loan Processing App
+      - key: ENV
+        value: production
     plan: free 

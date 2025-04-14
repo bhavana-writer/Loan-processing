@@ -12,6 +12,15 @@ export PYTHONMALLOC=malloc
 export PORT=${PORT:-10000}
 echo "Starting server on port: $PORT"
 
-# Start the application with optimized settings
-# Using uvicorn directly with the simplified server_deploy.py
-exec uvicorn server_deploy:app --host 0.0.0.0 --port $PORT --log-level info 
+# Set environment variables for Writer Framework
+export PYTHONPATH=$PYTHONPATH:$(pwd)
+export WRITER_FRAMEWORK_ENV=production
+
+# Print debugging information
+echo "Current directory: $(pwd)"
+echo "Python path: $PYTHONPATH"
+echo "Available files:"
+ls -la
+
+# Start the application with Writer Framework integration
+exec uvicorn writer_server:app --host 0.0.0.0 --port $PORT --log-level info 
